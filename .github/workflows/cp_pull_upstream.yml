@@ -17,7 +17,7 @@ jobs:
     if: ${{ github.event.repository.fork }}
 
     steps:
-      # 关键修复：关闭持久化凭证，避免内置GITHUB_TOKEN干扰上游访问
+      # 关键修复：关闭内置GITHUB_TOKEN持久化，消除跨仓拦截头
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -35,8 +35,8 @@ jobs:
           upstream_sync_repo: auto-yui-patch/fiddler-everywhere-patch-automated
           upstream_sync_branch: main
           target_sync_branch: main
-          target_repo_token: ${{ secrets.GITHUB_TOKEN }} # 用于推送到你自己的fork仓库
-          upstream_repo_token: ${{ secrets.UPSTREAM_PAT }} # 新增：用于读取上游仓库（核心修复）
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }} # 推送到自己fork
+          upstream_repo_token: ${{ secrets.UPSTREAM_PAT }} # 拉取上游（修复block核心）
           test_mode: false
 
       - name: Sync check
@@ -50,5 +50,3 @@ jobs:
             Due to a change in the workflow file of the upstream repository, GitHub has automatically suspended the scheduled automatic update. You need to manually sync your fork. 
 
             由于上游仓库的工作流文件发生了更改，GitHub 已自动暂停了计划的自动更新。您需要手动同步您的分叉仓库。
-
-            
